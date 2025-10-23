@@ -5,9 +5,12 @@ import { supabase } from '@/integrations/supabase/client';
 import { Navbar } from '@/components/Navbar';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Award, Users, BookOpen, TrendingUp } from 'lucide-react';
 import { toast } from 'sonner';
+import { InternsTable } from '@/components/admin/InternsTable';
+import { ProgramsTable } from '@/components/admin/ProgramsTable';
+import { EnrollmentsTable } from '@/components/admin/EnrollmentsTable';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function Admin() {
   const { user, loading: authLoading } = useAuth();
@@ -195,48 +198,28 @@ export default function Admin() {
           </motion.div>
         </div>
 
-        {/* Quick Actions */}
+        {/* Management Tabs */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
         >
-          <Card className="gradient-card border-0">
-            <CardHeader>
-              <CardTitle>Quick Actions</CardTitle>
-            </CardHeader>
-            <CardContent className="flex flex-wrap gap-4">
-              <Button variant="outline">
-                <Users className="mr-2 h-4 w-4" />
-                Manage Users
-              </Button>
-              <Button variant="outline">
-                <BookOpen className="mr-2 h-4 w-4" />
-                Manage Programs
-              </Button>
-              <Button variant="outline">
-                <Award className="mr-2 h-4 w-4" />
-                Issue Badges
-              </Button>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        {/* Backend Access */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="mt-8"
-        >
-          <Card className="gradient-card border-0 p-6 text-center">
-            <p className="text-muted-foreground mb-4">
-              For detailed database management and table operations
-            </p>
-            <p className="text-sm text-muted-foreground">
-              Use the backend interface to manage tables, add programs, enroll interns, and generate badges
-            </p>
-          </Card>
+          <Tabs defaultValue="enrollments" className="w-full">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="enrollments">Enrollments</TabsTrigger>
+              <TabsTrigger value="programs">Programs</TabsTrigger>
+              <TabsTrigger value="interns">Interns</TabsTrigger>
+            </TabsList>
+            <TabsContent value="enrollments" className="mt-6">
+              <EnrollmentsTable />
+            </TabsContent>
+            <TabsContent value="programs" className="mt-6">
+              <ProgramsTable />
+            </TabsContent>
+            <TabsContent value="interns" className="mt-6">
+              <InternsTable />
+            </TabsContent>
+          </Tabs>
         </motion.div>
       </div>
     </div>
