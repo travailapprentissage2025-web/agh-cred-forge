@@ -1,10 +1,11 @@
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Award, LogOut } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import logo from '@/assets/logo.jpg';
 
 export const Navbar = () => {
   const { user } = useAuth();
@@ -29,11 +30,18 @@ export const Navbar = () => {
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <motion.div
           whileHover={{ scale: 1.05 }}
-          className="flex items-center gap-2 cursor-pointer"
+          className="flex items-center gap-3 cursor-pointer"
           onClick={() => navigate('/')}
         >
-          <Award className="h-8 w-8 text-primary" />
-          <span className="text-xl font-bold">AghData</span>
+          <img 
+            src={logo} 
+            alt="AGH Logo" 
+            className="h-10 w-10 object-contain"
+          />
+          <div className="flex flex-col">
+            <span className="text-xl font-bold text-foreground">agh.</span>
+            <span className="text-xs text-muted-foreground">data agency holding</span>
+          </div>
         </motion.div>
 
         <div className="flex items-center gap-4">

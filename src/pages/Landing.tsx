@@ -4,6 +4,7 @@ import { Card } from '@/components/ui/card';
 import { Award, Sparkles, Shield, Zap } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Navbar } from '@/components/Navbar';
+import logo from '@/assets/logo.jpg';
 
 const features = [
   {
@@ -79,8 +80,8 @@ export default function Landing() {
           </h1>
 
           <p className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto">
-            Join AghData's premium internship platform. Gain real-world experience,
-            earn blockchain-verified badges, and showcase your skills to the world.
+            Rejoignez la plateforme de stage premium AGH Data Agency Holding. Acquérez une 
+            expérience concrète, obtenez des badges vérifiés par blockchain et valorisez vos compétences.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -123,9 +124,9 @@ export default function Landing() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl font-bold mb-4">Why Choose AghData?</h2>
+          <h2 className="text-4xl font-bold mb-4">Pourquoi Choisir AGH?</h2>
           <p className="text-muted-foreground text-lg">
-            Everything you need for a premium internship experience
+            Tout ce dont vous avez besoin pour une expérience de stage premium
           </p>
         </motion.div>
 
@@ -156,9 +157,9 @@ export default function Landing() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl font-bold mb-4">How It Works</h2>
+          <h2 className="text-4xl font-bold mb-4">Comment ça Marche?</h2>
           <p className="text-muted-foreground text-lg">
-            Your journey to verified success in three simple steps
+            Votre parcours vers le succès vérifié en trois étapes simples
           </p>
         </motion.div>
 
@@ -192,10 +193,10 @@ export default function Landing() {
           className="gradient-card rounded-3xl p-12 text-center max-w-4xl mx-auto glow-primary"
         >
           <Award className="h-16 w-16 text-primary mx-auto mb-6" />
-          <h2 className="text-4xl font-bold mb-4">Ready to Get Started?</h2>
+          <h2 className="text-4xl font-bold mb-4">Prêt à Commencer?</h2>
           <p className="text-muted-foreground text-lg mb-8 max-w-2xl mx-auto">
-            Join hundreds of successful interns who have earned their verified credentials
-            and accelerated their careers with AghData.
+            Rejoignez des centaines de stagiaires qui ont obtenu leurs certifications vérifiées
+            et accéléré leur carrière avec AGH Data Agency Holding.
           </p>
           <Button
             size="lg"
@@ -212,8 +213,8 @@ export default function Landing() {
         <div className="container mx-auto px-4 py-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="flex items-center gap-2">
-              <Award className="h-6 w-6 text-primary" />
-              <span className="font-semibold">AghData Internships</span>
+              <img src={logo} alt="AGH Logo" className="h-6 w-6 object-contain" />
+              <span className="font-semibold">AGH Data Agency Holding</span>
             </div>
             <p className="text-sm text-muted-foreground">
               © 2024 Agh Data Agency Holding SA. All rights reserved.

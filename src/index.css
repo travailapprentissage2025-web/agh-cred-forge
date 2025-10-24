@@ -8,37 +8,38 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Premium Blue Palette - Inspired by Credly/LinkedIn */
+    /* AGH Brand Colors - Navy Blue & Copper Orange */
     --background: 0 0% 100%;
-    --foreground: 222 47% 11%;
+    --foreground: 205 45% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 205 45% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover-foreground: 205 45% 15%;
 
-    /* Primary Blue - #2563EB */
-    --primary: 217 91% 60%;
+    /* Primary Navy Blue - #1a2e3d */
+    --primary: 205 35% 17%;
     --primary-foreground: 0 0% 100%;
-    --primary-hover: 217 91% 55%;
+    --primary-hover: 205 35% 22%;
 
-    /* Neutral Grays - Premium Feel */
-    --secondary: 220 14% 96%;
-    --secondary-foreground: 222 47% 11%;
+    /* Secondary Copper Orange - #d4894f */
+    --secondary: 28 58% 57%;
+    --secondary-foreground: 0 0% 100%;
 
     --muted: 210 40% 96%;
     --muted-foreground: 215 16% 47%;
 
-    --accent: 220 13% 91%;
-    --accent-foreground: 222 47% 11%;
+    /* Accent Copper */
+    --accent: 28 58% 57%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
     --border: 220 13% 91%;
     --input: 220 13% 91%;
-    --ring: 217 91% 60%;
+    --ring: 205 35% 17%;
 
     --radius: 0.75rem;
 
@@ -46,21 +47,22 @@ All colors MUST be HSL.
     --success: 142 71% 45%;
     --success-foreground: 0 0% 100%;
 
-    /* Warning/Badge Gold */
-    --warning: 38 92% 50%;
+    /* Warning/Badge - Using Copper */
+    --warning: 28 58% 57%;
     --warning-foreground: 0 0% 100%;
 
-    /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(224 76% 48%) 100%);
-    --gradient-hero: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(220 14% 96%) 100%);
-    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(220 14% 98%) 100%);
+    /* Gradients - Navy to Copper */
+    --gradient-primary: linear-gradient(135deg, hsl(205 35% 17%) 0%, hsl(205 35% 25%) 100%);
+    --gradient-hero: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(210 30% 96%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(210 25% 98%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(28 58% 57%) 0%, hsl(28 68% 65%) 100%);
 
-    /* Shadows - Premium Depth */
-    --shadow-sm: 0 1px 2px 0 hsl(222 47% 11% / 0.05);
-    --shadow-md: 0 4px 6px -1px hsl(222 47% 11% / 0.1), 0 2px 4px -2px hsl(222 47% 11% / 0.1);
-    --shadow-lg: 0 10px 15px -3px hsl(222 47% 11% / 0.1), 0 4px 6px -4px hsl(222 47% 11% / 0.1);
-    --shadow-xl: 0 20px 25px -5px hsl(222 47% 11% / 0.1), 0 8px 10px -6px hsl(222 47% 11% / 0.1);
-    --shadow-glow: 0 0 40px hsl(217 91% 60% / 0.3);
+    /* Shadows - Navy Depth */
+    --shadow-sm: 0 1px 2px 0 hsl(205 45% 15% / 0.05);
+    --shadow-md: 0 4px 6px -1px hsl(205 45% 15% / 0.1), 0 2px 4px -2px hsl(205 45% 15% / 0.1);
+    --shadow-lg: 0 10px 15px -3px hsl(205 45% 15% / 0.1), 0 4px 6px -4px hsl(205 45% 15% / 0.1);
+    --shadow-xl: 0 20px 25px -5px hsl(205 45% 15% / 0.1), 0 8px 10px -6px hsl(205 45% 15% / 0.1);
+    --shadow-glow: 0 0 40px hsl(28 58% 57% / 0.3);
 
     /* Transitions */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -68,36 +70,36 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 222 47% 11%;
+    --background: 205 45% 8%;
     --foreground: 210 40% 98%;
 
-    --card: 222 47% 13%;
+    --card: 205 40% 12%;
     --card-foreground: 210 40% 98%;
 
-    --popover: 222 47% 13%;
+    --popover: 205 40% 12%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 217 91% 60%;
+    --primary: 205 35% 17%;
     --primary-foreground: 0 0% 100%;
-    --primary-hover: 217 91% 55%;
+    --primary-hover: 205 35% 22%;
 
-    --secondary: 217 33% 18%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 28 58% 57%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 217 33% 18%;
+    --muted: 205 35% 20%;
     --muted-foreground: 215 20% 65%;
 
-    --accent: 217 33% 18%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 28 58% 57%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 63% 31%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 217 33% 18%;
-    --input: 217 33% 18%;
-    --ring: 217 91% 60%;
+    --border: 205 35% 20%;
+    --input: 205 35% 20%;
+    --ring: 205 35% 17%;
 
-    --shadow-glow: 0 0 40px hsl(217 91% 60% / 0.4);
+    --shadow-glow: 0 0 40px hsl(28 58% 57% / 0.4);
   }
 }
 
