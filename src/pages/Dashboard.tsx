@@ -42,19 +42,22 @@ export default function Dashboard() {
 
       setProfile(profileData);
 
-      // Fetch role
-      const { data: roleData } = await supabase
+      // Fetch all roles for the user
+      const { data: rolesData } = await supabase
         .from('user_roles')
         .select('role')
-        .eq('user_id', user!.id)
-        .single();
+        .eq('user_id', user!.id);
 
-      if (roleData) {
-        setRole(roleData.role);
+      if (rolesData && rolesData.length > 0) {
+        // Check if user has admin role
+        const hasAdminRole = rolesData.some(r => r.role === 'admin');
         
-        if (roleData.role === 'admin') {
+        if (hasAdminRole) {
+          setRole('admin');
           navigate('/admin');
           return;
+        } else {
+          setRole(rolesData[0].role);
         }
       }
 
