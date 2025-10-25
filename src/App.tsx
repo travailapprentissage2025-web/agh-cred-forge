@@ -8,6 +8,9 @@ import Landing from "./pages/Landing";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import Admin from "./pages/Admin";
+import FlutterCourse from "./pages/FlutterCourse";
+import AdminSubmissions from "./pages/AdminSubmissions";
+import AdminCourses from "./pages/AdminCourses";
 import NotFound from "./pages/NotFound";
 import { LoadingPage } from "./components/LoadingPage";
 
@@ -40,6 +43,9 @@ const App = () => {
             <Route path="/auth" element={<Auth />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="/courses/flutter" element={<FlutterCourse />} />
+            <Route path="/admin/submissions" element={<AdminSubmissions />} />
+            <Route path="/admin/courses" element={<AdminCourses />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </TooltipProvider>

@@ -14,6 +14,24 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_settings: {
+        Row: {
+          drive_folder_url: string | null
+          id: string
+          updated_at: string | null
+        }
+        Insert: {
+          drive_folder_url?: string | null
+          id?: string
+          updated_at?: string | null
+        }
+        Update: {
+          drive_folder_url?: string | null
+          id?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       badges: {
         Row: {
           id: string
@@ -58,6 +76,74 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      chapters: {
+        Row: {
+          course_id: string | null
+          created_at: string | null
+          end_time: string | null
+          id: string
+          order_index: number
+          start_time: string
+          title: string
+        }
+        Insert: {
+          course_id?: string | null
+          created_at?: string | null
+          end_time?: string | null
+          id?: string
+          order_index: number
+          start_time: string
+          title: string
+        }
+        Update: {
+          course_id?: string | null
+          created_at?: string | null
+          end_time?: string | null
+          id?: string
+          order_index?: number
+          start_time?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chapters_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      courses: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          status: string | null
+          thumbnail_url: string | null
+          title: string
+          video_url: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          status?: string | null
+          thumbnail_url?: string | null
+          title: string
+          video_url: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          status?: string | null
+          thumbnail_url?: string | null
+          title?: string
+          video_url?: string
+        }
+        Relationships: []
       }
       enrollments: {
         Row: {
@@ -163,6 +249,96 @@ export type Database = {
           id?: string
         }
         Relationships: []
+      }
+      progress: {
+        Row: {
+          chapter_id: string | null
+          completed: boolean | null
+          completed_at: string | null
+          id: string
+          user_id: string
+        }
+        Insert: {
+          chapter_id?: string | null
+          completed?: boolean | null
+          completed_at?: string | null
+          id?: string
+          user_id: string
+        }
+        Update: {
+          chapter_id?: string | null
+          completed?: boolean | null
+          completed_at?: string | null
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "progress_chapter_id_fkey"
+            columns: ["chapter_id"]
+            isOneToOne: false
+            referencedRelation: "chapters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "progress_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      submissions: {
+        Row: {
+          chapter_id: string | null
+          feedback: string | null
+          file_name: string
+          file_url: string
+          id: string
+          reviewed_at: string | null
+          status: string | null
+          submitted_at: string | null
+          user_id: string
+        }
+        Insert: {
+          chapter_id?: string | null
+          feedback?: string | null
+          file_name: string
+          file_url: string
+          id?: string
+          reviewed_at?: string | null
+          status?: string | null
+          submitted_at?: string | null
+          user_id: string
+        }
+        Update: {
+          chapter_id?: string | null
+          feedback?: string | null
+          file_name?: string
+          file_url?: string
+          id?: string
+          reviewed_at?: string | null
+          status?: string | null
+          submitted_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "submissions_chapter_id_fkey"
+            columns: ["chapter_id"]
+            isOneToOne: false
+            referencedRelation: "chapters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "submissions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
