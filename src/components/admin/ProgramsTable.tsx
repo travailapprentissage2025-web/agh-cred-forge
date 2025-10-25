@@ -23,7 +23,12 @@ interface Program {
   created_at: string;
 }
 
-export function ProgramsTable() {
+interface ProgramsTableProps {
+  searchTerm: string;
+  filter: string;
+}
+
+export function ProgramsTable({ searchTerm, filter }: ProgramsTableProps) {
   const [programs, setPrograms] = useState<Program[]>([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -186,7 +191,21 @@ export function ProgramsTable() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {programs.map((program) => (
+                {programs
+                  .filter((program) => {
+                    const searchLower = searchTerm.toLowerCase();
+                    return (
+                      program.title.toLowerCase().includes(searchLower) ||
+                      program.domain.toLowerCase().includes(searchLower) ||
+                      program.description?.toLowerCase().includes(searchLower) ||
+                      program.skills.some(skill => skill.toLowerCase().includes(searchLower))
+                    );
+                  })
+                  .filter((program) => {
+                    if (!filter || filter === 'all') return true;
+                    return program.status === filter;
+                  })
+                  .map((program) => (
                   <TableRow key={program.id}>
                     <TableCell className="font-medium">{program.title}</TableCell>
                     <TableCell>{program.domain}</TableCell>

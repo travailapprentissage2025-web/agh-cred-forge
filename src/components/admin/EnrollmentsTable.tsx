@@ -29,7 +29,12 @@ interface Enrollment {
   };
 }
 
-export function EnrollmentsTable() {
+interface EnrollmentsTableProps {
+  searchTerm: string;
+  filter: string;
+}
+
+export function EnrollmentsTable({ searchTerm, filter }: EnrollmentsTableProps) {
   const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
   const [interns, setInterns] = useState<any[]>([]);
   const [programs, setPrograms] = useState<any[]>([]);
@@ -238,7 +243,21 @@ export function EnrollmentsTable() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {enrollments.map((enrollment) => (
+                {enrollments
+                  .filter((enrollment) => {
+                    const searchLower = searchTerm.toLowerCase();
+                    return (
+                      enrollment.profiles.full_name.toLowerCase().includes(searchLower) ||
+                      enrollment.profiles.email.toLowerCase().includes(searchLower) ||
+                      enrollment.internship_programs.title.toLowerCase().includes(searchLower) ||
+                      enrollment.internship_programs.domain.toLowerCase().includes(searchLower)
+                    );
+                  })
+                  .filter((enrollment) => {
+                    if (!filter || filter === 'all') return true;
+                    return enrollment.status === filter;
+                  })
+                  .map((enrollment) => (
                   <TableRow key={enrollment.id}>
                     <TableCell className="font-medium">
                       {enrollment.profiles.full_name}

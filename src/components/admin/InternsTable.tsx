@@ -14,7 +14,12 @@ interface Intern {
   created_at: string;
 }
 
-export function InternsTable() {
+interface InternsTableProps {
+  searchTerm: string;
+  filter: string;
+}
+
+export function InternsTable({ searchTerm, filter }: InternsTableProps) {
   const [interns, setInterns] = useState<Intern[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -87,7 +92,19 @@ export function InternsTable() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {interns.map((intern) => (
+                {interns
+                  .filter((intern) => {
+                    const searchLower = searchTerm.toLowerCase();
+                    return (
+                      intern.full_name.toLowerCase().includes(searchLower) ||
+                      intern.email.toLowerCase().includes(searchLower)
+                    );
+                  })
+                  .filter((intern) => {
+                    if (!filter || filter === 'all') return true;
+                    return true; // Pour l'instant, tous les internes sont considérés comme actifs
+                  })
+                  .map((intern) => (
                   <TableRow key={intern.id}>
                     <TableCell>
                       <div className="flex items-center gap-3">
