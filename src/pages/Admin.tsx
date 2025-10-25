@@ -46,11 +46,16 @@ export default function Admin() {
 
   const checkAdminAccess = async () => {
     try {
-      const { data: roleData } = await supabase
+      const { data: roleData, error: roleError } = await supabase
         .from('user_roles')
         .select('role')
         .eq('user_id', user!.id)
-        .single();
+        .eq('role', 'admin')
+        .maybeSingle();
+
+      if (roleError) {
+        console.error('Error fetching role:', roleError);
+      }
 
       if (!roleData || roleData.role !== 'admin') {
         toast.error('Access denied. Admin privileges required.');
