@@ -30,6 +30,7 @@ export default function FlutterCourse() {
   const [loading, setLoading] = useState(true);
   const [progress, setProgress] = useState(0);
   const [submissionDialogOpen, setSubmissionDialogOpen] = useState(false);
+  const [playerNonce, setPlayerNonce] = useState(0);
   const [courseId, setCourseId] = useState<string>('');
 
   useEffect(() => {
@@ -132,7 +133,8 @@ export default function FlutterCourse() {
     if (!currentChapter) return '';
     const videoId = '3kaGC_DrUnw';
     const startSeconds = timeToSeconds(currentChapter.start_time);
-    return `https://www.youtube.com/embed/${videoId}?start=${startSeconds}&enablejsapi=1&rel=0&modestbranding=1`;
+    const origin = window.location.origin;
+    return `https://www.youtube-nocookie.com/embed/${videoId}?start=${startSeconds}&enablejsapi=1&rel=0&modestbranding=1&origin=${encodeURIComponent(origin)}`;
   };
 
   const timeToSeconds = (time: string) => {
@@ -206,19 +208,40 @@ export default function FlutterCourse() {
                 <div className="aspect-video bg-slate-900 relative">
                   {currentChapter ? (
                     <iframe
-                      key={currentChapter.id}
+                      key={`${currentChapter.id}-${playerNonce}`}
                       src={getYouTubeEmbedUrl()}
                       className="w-full h-full"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                       allowFullScreen
                       title={currentChapter.title}
                       loading="lazy"
+                      referrerPolicy="strict-origin-when-cross-origin"
                     />
                   ) : (
                     <div className="w-full h-full flex flex-col items-center justify-center gap-4">
                       <PlayCircle className="w-16 h-16 text-slate-400" />
                       <p className="text-slate-400 text-lg">Sélectionnez un chapitre pour commencer</p>
                     </div>
+                  )}
+                </div>
+
+                <div className="flex gap-3 items-center p-4 border-t border-slate-100 bg-slate-50/60">
+                  <Button
+                    variant="outline"
+                    onClick={() => setPlayerNonce((n) => n + 1)}
+                  >
+                    Recharger le lecteur
+                  </Button>
+                  {currentChapter && (
+                    <Button asChild variant="secondary">
+                      <a
+                        href={`https://www.youtube.com/watch?v=3kaGC_DrUnw&t=${timeToSeconds(currentChapter.start_time)}s`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Ouvrir sur YouTube
+                      </a>
+                    </Button>
                   )}
                 </div>
                 

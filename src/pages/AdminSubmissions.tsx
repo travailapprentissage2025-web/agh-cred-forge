@@ -51,7 +51,7 @@ export default function AdminSubmissions() {
   const [selectedSubmission, setSelectedSubmission] = useState<Submission | null>(null);
   const [feedback, setFeedback] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
-
+  const [driveFolderUrl, setDriveFolderUrl] = useState<string | null>(null);
   useEffect(() => {
     if (!authLoading && !user) {
       navigate('/auth');
@@ -80,6 +80,11 @@ export default function AdminSubmissions() {
       }
 
       await loadSubmissions();
+      const { data: settings } = await supabase
+        .from('admin_settings')
+        .select('drive_folder_url')
+        .maybeSingle();
+      setDriveFolderUrl(settings?.drive_folder_url || null);
     } catch (error) {
       console.error('Error checking admin access:', error);
       navigate('/dashboard');

@@ -86,7 +86,22 @@ export function SubmissionDialog({
 
       if (dbError) throw dbError;
 
-      toast.success('✅ Livrable envoyé avec succès !');
+      // Try to copy to Google Drive (if configured)
+      const { error: driveError } = await supabase.functions.invoke('copy-to-drive', {
+        body: {
+          fileUrl: publicUrl,
+          fileName: file.name,
+          chapterTitle,
+        },
+      });
+
+      if (driveError) {
+        console.warn('Drive copy skipped or not configured:', driveError);
+        toast.success('✅ Livrable envoyé. La copie vers Drive sera activée après configuration.');
+      } else {
+        toast.success('✅ Livrable envoyé et copié vers Google Drive !');
+      }
+
       onOpenChange(false);
       setFile(null);
       onSuccess();
