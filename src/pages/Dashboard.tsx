@@ -7,8 +7,10 @@ import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Award, BookOpen, TrendingUp } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Award, BookOpen, TrendingUp, PlayCircle, GraduationCap } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { ProfileEditor } from '@/components/ProfileEditor';
 
 export default function Dashboard() {
   const { user, loading: authLoading } = useAuth();
@@ -17,6 +19,7 @@ export default function Dashboard() {
   const [role, setRole] = useState<string>('intern');
   const [enrollments, setEnrollments] = useState<any[]>([]);
   const [badges, setBadges] = useState<any[]>([]);
+  const [courses, setCourses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -82,6 +85,14 @@ export default function Dashboard() {
         .eq('user_id', user!.id);
 
       setBadges(badgesData || []);
+
+      // Fetch available courses
+      const { data: coursesData } = await supabase
+        .from('courses')
+        .select('*')
+        .eq('status', 'active');
+
+      setCourses(coursesData || []);
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
@@ -132,10 +143,14 @@ export default function Dashboard() {
                 <div className="flex-1">
                   <h1 className="text-3xl font-bold mb-2">{profile.full_name}</h1>
                   <p className="text-muted-foreground mb-3">{profile.email}</p>
+                  {profile.bio && (
+                    <p className="text-sm text-muted-foreground mb-3">{profile.bio}</p>
+                  )}
                   <Badge variant="secondary" className="capitalize">
                     {role}
                   </Badge>
                 </div>
+                <ProfileEditor profile={profile} onUpdate={fetchData} />
               </div>
             </CardContent>
           </Card>
@@ -202,14 +217,68 @@ export default function Dashboard() {
           </motion.div>
         </div>
 
-        {/* Active Enrollments */}
+        {/* Available Courses */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
           className="mb-8"
         >
-          <h2 className="text-2xl font-bold mb-4">Active Internships</h2>
+          <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+            <GraduationCap className="h-6 w-6 text-primary" />
+            Formations Disponibles
+          </h2>
+          {courses.length === 0 ? (
+            <Card className="gradient-card border-0">
+              <CardContent className="p-12 text-center">
+                <GraduationCap className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                <p className="text-muted-foreground">
+                  Aucune formation disponible pour le moment
+                </p>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {courses.map((course) => (
+                <motion.div
+                  key={course.id}
+                  whileHover={{ scale: 1.02 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <Card className="hover-lift gradient-card border-0 overflow-hidden h-full">
+                    <div className="aspect-video bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
+                      <PlayCircle className="h-16 w-16 text-white/80" />
+                    </div>
+                    <CardHeader>
+                      <CardTitle className="line-clamp-2">{course.title}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+                        {course.description || 'Formation complète et pratique'}
+                      </p>
+                      <Button 
+                        onClick={() => navigate('/courses/flutter')}
+                        className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+                      >
+                        <PlayCircle className="h-4 w-4 mr-2" />
+                        Commencer la formation
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </motion.div>
+
+        {/* Active Enrollments */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="mb-8"
+        >
+          <h2 className="text-2xl font-bold mb-4">Stages Actifs</h2>
           {enrollments.filter(e => e.status === 'active').length === 0 ? (
             <Card className="gradient-card border-0">
               <CardContent className="p-12 text-center">
@@ -257,7 +326,7 @@ export default function Dashboard() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
+          transition={{ delay: 0.6 }}
         >
           <h2 className="text-2xl font-bold mb-4">Your Badges</h2>
           {badges.length === 0 ? (
