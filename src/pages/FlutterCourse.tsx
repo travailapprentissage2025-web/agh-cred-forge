@@ -132,15 +132,17 @@ export default function FlutterCourse() {
     if (!currentChapter) return '';
     const videoId = '3kaGC_DrUnw';
     const startSeconds = timeToSeconds(currentChapter.start_time);
-    return `https://www.youtube.com/embed/${videoId}?start=${startSeconds}&autoplay=1`;
+    return `https://www.youtube.com/embed/${videoId}?start=${startSeconds}&enablejsapi=1&rel=0&modestbranding=1`;
   };
 
   const timeToSeconds = (time: string) => {
     const parts = time.split(':').map(Number);
     if (parts.length === 3) {
       return parts[0] * 3600 + parts[1] * 60 + parts[2];
+    } else if (parts.length === 2) {
+      return parts[0] * 60 + parts[1];
     }
-    return parts[0] * 60 + parts[1];
+    return 0;
   };
 
   if (authLoading || loading) {
@@ -201,17 +203,21 @@ export default function FlutterCourse() {
                 )}
               </CardHeader>
               <CardContent className="p-0">
-                <div className="aspect-video bg-slate-900">
+                <div className="aspect-video bg-slate-900 relative">
                   {currentChapter ? (
                     <iframe
+                      key={currentChapter.id}
                       src={getYouTubeEmbedUrl()}
                       className="w-full h-full"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                       allowFullScreen
+                      title={currentChapter.title}
+                      loading="lazy"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <p className="text-slate-400">Sélectionnez un chapitre pour commencer</p>
+                    <div className="w-full h-full flex flex-col items-center justify-center gap-4">
+                      <PlayCircle className="w-16 h-16 text-slate-400" />
+                      <p className="text-slate-400 text-lg">Sélectionnez un chapitre pour commencer</p>
                     </div>
                   )}
                 </div>
@@ -230,6 +236,23 @@ export default function FlutterCourse() {
                     </Button>
                   </div>
                   
+                  {/* Chapter Info */}
+                  {currentChapter && (
+                    <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-lg p-4 border border-slate-200">
+                      <h3 className="font-semibold text-slate-900 mb-2">
+                        📚 À propos de ce chapitre
+                      </h3>
+                      <div className="space-y-2 text-sm text-slate-600">
+                        <p>
+                          <strong>Durée :</strong> {currentChapter.start_time} - {currentChapter.end_time}
+                        </p>
+                        <p>
+                          💡 Regardez attentivement la vidéo et suivez les instructions pour pratiquer
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                  
                   {/* Submission Section */}
                   <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-200">
                     <div className="flex items-start gap-3 mb-3">
@@ -239,7 +262,7 @@ export default function FlutterCourse() {
                           Soumettez votre code
                         </h3>
                         <p className="text-sm text-slate-600">
-                          Partagez le code que vous avez développé pendant ce chapitre (.zip ou .rar)
+                          Après avoir terminé ce chapitre, partagez le code que vous avez développé (.zip ou .rar)
                         </p>
                       </div>
                     </div>
