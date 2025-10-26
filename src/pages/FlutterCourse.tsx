@@ -50,8 +50,8 @@ export default function FlutterCourse() {
       const { data: course } = await supabase
         .from('courses')
         .select('*')
-        .eq('title', 'Flutter pour débutants')
-        .single();
+        .eq('video_url', 'https://youtu.be/3kaGC_DrUnw')
+        .maybeSingle();
 
       if (!course) {
         toast.error('Cours non trouvé');
@@ -167,9 +167,12 @@ export default function FlutterCourse() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
-            Cours Flutter pour débutants
+          <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
+            Formation Flutter - Développement Mobile
           </h1>
+          <p className="text-slate-600 text-lg">
+            Maîtrisez Flutter et créez des applications iOS et Android professionnelles
+          </p>
           <div className="flex items-center gap-4 mt-4">
             <Progress value={progress} className="flex-1" />
             <span className="text-sm font-medium text-slate-600">
@@ -185,42 +188,81 @@ export default function FlutterCourse() {
             animate={{ opacity: 1, x: 0 }}
             className="lg:col-span-2"
           >
-            <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <PlayCircle className="w-5 h-5 text-blue-600" />
+            <Card className="bg-white/90 backdrop-blur-sm border-0 shadow-2xl overflow-hidden">
+              <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+                <CardTitle className="flex items-center gap-2 text-xl">
+                  <PlayCircle className="w-6 h-6" />
                   {currentChapter?.title || 'Sélectionnez un chapitre'}
                 </CardTitle>
+                {currentChapter && (
+                  <p className="text-blue-100 text-sm mt-2">
+                    Chapitre {chapters.findIndex(ch => ch.id === currentChapter.id) + 1} sur {chapters.length}
+                  </p>
+                )}
               </CardHeader>
-              <CardContent>
-                <div className="aspect-video bg-slate-900 rounded-lg overflow-hidden mb-4">
-                  {currentChapter && (
+              <CardContent className="p-0">
+                <div className="aspect-video bg-slate-900">
+                  {currentChapter ? (
                     <iframe
                       src={getYouTubeEmbedUrl()}
                       className="w-full h-full"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
                     />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <p className="text-slate-400">Sélectionnez un chapitre pour commencer</p>
+                    </div>
                   )}
                 </div>
-                <div className="flex gap-3">
-                  <Button
-                    onClick={() => currentChapter && markChapterComplete(currentChapter.id)}
-                    disabled={currentChapter?.completed}
-                    className="flex-1"
-                  >
-                    <CheckCircle className="w-4 h-4 mr-2" />
-                    {currentChapter?.completed ? 'Chapitre terminé' : 'Marquer comme terminé'}
-                  </Button>
-                  <Button
-                    onClick={() => setSubmissionDialogOpen(true)}
-                    variant="outline"
-                    disabled={!currentChapter?.completed || currentChapter?.hasSubmission}
-                    className="flex-1"
-                  >
-                    <Upload className="w-4 h-4 mr-2" />
-                    {currentChapter?.hasSubmission ? 'Livrable envoyé' : 'Soumettre le livrable'}
-                  </Button>
+                
+                {/* Chapter Actions */}
+                <div className="p-6 space-y-4">
+                  <div className="flex gap-3">
+                    <Button
+                      onClick={() => currentChapter && markChapterComplete(currentChapter.id)}
+                      disabled={currentChapter?.completed}
+                      className="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
+                      size="lg"
+                    >
+                      <CheckCircle className="w-5 h-5 mr-2" />
+                      {currentChapter?.completed ? '✓ Chapitre terminé' : 'Marquer comme terminé'}
+                    </Button>
+                  </div>
+                  
+                  {/* Submission Section */}
+                  <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-200">
+                    <div className="flex items-start gap-3 mb-3">
+                      <Upload className="w-5 h-5 text-blue-600 mt-0.5" />
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-slate-900 mb-1">
+                          Soumettez votre code
+                        </h3>
+                        <p className="text-sm text-slate-600">
+                          Partagez le code que vous avez développé pendant ce chapitre (.zip ou .rar)
+                        </p>
+                      </div>
+                    </div>
+                    <Button
+                      onClick={() => setSubmissionDialogOpen(true)}
+                      disabled={!currentChapter?.completed || currentChapter?.hasSubmission}
+                      variant={currentChapter?.hasSubmission ? "secondary" : "default"}
+                      className="w-full"
+                      size="lg"
+                    >
+                      {currentChapter?.hasSubmission ? (
+                        <>
+                          <CheckCircle className="w-5 h-5 mr-2" />
+                          Livrable déjà envoyé
+                        </>
+                      ) : (
+                        <>
+                          <Upload className="w-5 h-5 mr-2" />
+                          Envoyer mon code
+                        </>
+                      )}
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -232,49 +274,66 @@ export default function FlutterCourse() {
             animate={{ opacity: 1, x: 0 }}
             className="lg:col-span-1"
           >
-            <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
-              <CardHeader>
+            <Card className="bg-white/90 backdrop-blur-sm border-0 shadow-2xl sticky top-24">
+              <CardHeader className="bg-gradient-to-r from-slate-800 to-slate-700 text-white">
                 <CardTitle className="flex items-center gap-2">
                   <Clock className="w-5 h-5" />
-                  Chapitres ({chapters.length})
+                  Programme du cours
                 </CardTitle>
+                <p className="text-slate-300 text-sm mt-1">
+                  {chapters.filter(ch => ch.completed).length} / {chapters.length} chapitres terminés
+                </p>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-2 max-h-[600px] overflow-y-auto">
+              <CardContent className="p-4">
+                <div className="space-y-2 max-h-[calc(100vh-300px)] overflow-y-auto pr-2 custom-scrollbar">
                   {chapters.map((chapter, index) => (
-                    <button
+                    <motion.button
                       key={chapter.id}
                       onClick={() => setCurrentChapter(chapter)}
-                      className={`w-full text-left p-4 rounded-lg transition-all ${
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className={`w-full text-left p-4 rounded-xl transition-all ${
                         currentChapter?.id === chapter.id
-                          ? 'bg-blue-100 border-2 border-blue-500'
-                          : 'bg-slate-50 hover:bg-slate-100'
+                          ? 'bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-lg'
+                          : chapter.completed
+                          ? 'bg-green-50 hover:bg-green-100 border-2 border-green-200'
+                          : 'bg-slate-50 hover:bg-slate-100 border-2 border-slate-200'
                       }`}
                     >
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="text-xs font-medium text-slate-500">
-                              #{index + 1}
-                            </span>
-                            {chapter.completed && (
-                              <CheckCircle className="w-4 h-4 text-green-500" />
-                            )}
+                      <div className="flex items-start gap-3">
+                        <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
+                          currentChapter?.id === chapter.id
+                            ? 'bg-white/20 text-white'
+                            : chapter.completed
+                            ? 'bg-green-500 text-white'
+                            : 'bg-slate-200 text-slate-600'
+                        }`}>
+                          {chapter.completed ? '✓' : index + 1}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className={`text-sm font-semibold mb-1 ${
+                            currentChapter?.id === chapter.id ? 'text-white' : 'text-slate-900'
+                          }`}>
+                            {chapter.title}
+                          </p>
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <p className={`text-xs ${
+                              currentChapter?.id === chapter.id ? 'text-white/80' : 'text-slate-500'
+                            }`}>
+                              ⏱️ {chapter.start_time}
+                            </p>
                             {chapter.hasSubmission && (
-                              <Badge variant="secondary" className="text-xs">
-                                Livrable envoyé
+                              <Badge 
+                                variant="secondary" 
+                                className="text-xs bg-blue-500 text-white"
+                              >
+                                📤 Code envoyé
                               </Badge>
                             )}
                           </div>
-                          <p className="text-sm font-medium text-slate-900">
-                            {chapter.title}
-                          </p>
-                          <p className="text-xs text-slate-500 mt-1">
-                            {chapter.start_time}
-                          </p>
                         </div>
                       </div>
-                    </button>
+                    </motion.button>
                   ))}
                 </div>
               </CardContent>
