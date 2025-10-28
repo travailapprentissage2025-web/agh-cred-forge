@@ -54,6 +54,18 @@ export const Navbar = () => {
                 Dashboard
               </Button>
               <Button
+                variant="ghost"
+                onClick={() => navigate('/profile')}
+              >
+                Profil
+              </Button>
+              <Button
+                variant="ghost"
+                onClick={() => navigate('/leaderboard')}
+              >
+                Classement
+              </Button>
+              <Button
                 variant="outline"
                 onClick={handleSignOut}
                 className="gap-2"

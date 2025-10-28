@@ -8,9 +8,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { PlayCircle, CheckCircle, Upload, Clock, List } from 'lucide-react';
+import { PlayCircle, CheckCircle, Upload, Clock, List, ExternalLink, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
 import { SubmissionDialog } from '@/components/course/SubmissionDialog';
+import { AchievementToast } from '@/components/gamification/AchievementToast';
+import { useGamification } from '@/hooks/useGamification';
 
 interface Chapter {
   id: string;
@@ -33,6 +35,7 @@ export default function FlutterCourse() {
   const [playerNonce, setPlayerNonce] = useState(0);
   const [courseId, setCourseId] = useState<string>('');
   const [showChaptersList, setShowChaptersList] = useState(false);
+  const { markChapterComplete, newBadges, clearNewBadges } = useGamification(user?.id);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -237,7 +240,7 @@ export default function FlutterCourse() {
     }
   };
 
-  const markChapterComplete = async (chapterId: string) => {
+  const markChapterCompleteHandler = async (chapterId: string) => {
     try {
       const { error } = await supabase
         .from('progress')
@@ -249,6 +252,9 @@ export default function FlutterCourse() {
         });
 
       if (error) throw error;
+
+      // Accorder l'XP et mettre à jour le streak
+      await markChapterComplete();
 
       toast.success('Chapitre terminé ! 🎉');
       loadCourse(); // Recharger les données
@@ -422,7 +428,7 @@ export default function FlutterCourse() {
                 <div className="p-6 space-y-4">
                   <div className="flex gap-3">
                     <Button
-                      onClick={() => currentChapter && markChapterComplete(currentChapter.id)}
+                      onClick={() => currentChapter && markChapterCompleteHandler(currentChapter.id)}
                       disabled={currentChapter?.completed}
                       className="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
                       size="lg"
@@ -588,6 +594,12 @@ export default function FlutterCourse() {
           onSuccess={loadCourse}
         />
       )}
+
+      <AchievementToast
+        badge={newBadges[0] || null}
+        show={newBadges.length > 0}
+        onHide={clearNewBadges}
+      />
     </div>
   );
 }

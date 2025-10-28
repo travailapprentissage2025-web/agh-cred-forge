@@ -8,9 +8,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Award, BookOpen, TrendingUp, PlayCircle, GraduationCap } from 'lucide-react';
+import { Award, BookOpen, TrendingUp, PlayCircle, GraduationCap, Trophy } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ProfileEditor } from '@/components/ProfileEditor';
+import { LevelProgress } from '@/components/gamification/LevelProgress';
+import { StreakDisplay } from '@/components/gamification/StreakDisplay';
+import { BadgeCard } from '@/components/gamification/BadgeCard';
+import { useGamification } from '@/hooks/useGamification';
 
 export default function Dashboard() {
   const { user, loading: authLoading } = useAuth();
@@ -21,6 +25,7 @@ export default function Dashboard() {
   const [badges, setBadges] = useState<any[]>([]);
   const [courses, setCourses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const { userLevel, updateStreak } = useGamification(user?.id);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -31,6 +36,7 @@ export default function Dashboard() {
   useEffect(() => {
     if (user) {
       fetchData();
+      updateStreak(); // Mettre à jour le streak au chargement
     }
   }, [user]);
 
@@ -75,16 +81,18 @@ export default function Dashboard() {
 
       setEnrollments(enrollmentsData || []);
 
-      // Fetch badges
-      const { data: badgesData } = await supabase
-        .from('badges')
+      // Fetch badges (earned badges from gamification)
+      const { data: earnedBadgesData } = await supabase
+        .from('user_badges' as any)
         .select(`
           *,
-          internship_programs (*)
+          badge:badges(*)
         `)
-        .eq('user_id', user!.id);
+        .eq('user_id', user!.id)
+        .order('earned_at', { ascending: false })
+        .limit(6);
 
-      setBadges(badgesData || []);
+      setBadges(earnedBadgesData || []);
 
       // Fetch available courses
       const { data: coursesData } = await supabase
@@ -157,22 +165,49 @@ export default function Dashboard() {
         </motion.div>
 
         {/* Stats Cards */}
-        <div className="grid md:grid-cols-3 gap-6 mb-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
+            className="lg:col-span-2"
+          >
+            <LevelProgress
+              currentLevel={userLevel?.level || 1}
+              currentXp={userLevel?.xp || 0}
+              nextLevelXp={Math.pow(userLevel?.level || 1, 2) * 100}
+            />
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            <StreakDisplay
+              currentStreak={userLevel?.current_streak || 0}
+              longestStreak={userLevel?.longest_streak || 0}
+            />
+          </motion.div>
+        </div>
+
+        {/* Quick Stats */}
+        <div className="grid md:grid-cols-3 gap-6 mb-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
           >
             <Card className="hover-lift gradient-card border-0">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Active Programs
+                  Chapitres Complétés
                 </CardTitle>
                 <BookOpen className="h-4 w-4 text-primary" />
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold">
-                  {enrollments.filter(e => e.status === 'active').length}
+                  {userLevel?.total_chapters_completed || 0}
                 </div>
               </CardContent>
             </Card>
@@ -181,12 +216,12 @@ export default function Dashboard() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
+            transition={{ delay: 0.4 }}
           >
             <Card className="hover-lift gradient-card border-0">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Badges Earned
+                  Badges Gagnés
                 </CardTitle>
                 <Award className="h-4 w-4 text-warning" />
               </CardHeader>
@@ -199,23 +234,59 @@ export default function Dashboard() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
+            transition={{ delay: 0.5 }}
           >
             <Card className="hover-lift gradient-card border-0">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Completed
+                  Soumissions
                 </CardTitle>
                 <TrendingUp className="h-4 w-4 text-success" />
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold">
-                  {enrollments.filter(e => e.status === 'completed').length}
+                  {userLevel?.total_submissions || 0}
                 </div>
               </CardContent>
             </Card>
           </motion.div>
         </div>
+
+        {/* Badges Section */}
+        {badges.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className="mb-8"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-2xl font-bold flex items-center gap-2">
+                <Trophy className="h-6 w-6 text-primary" />
+                Mes Badges
+              </h2>
+              <Button variant="outline" onClick={() => navigate('/profile')}>
+                Voir tout
+              </Button>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+              {badges.map((userBadge, index) => (
+                <motion.div
+                  key={userBadge.id}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.6 + index * 0.05 }}
+                >
+                  <BadgeCard
+                    badge={userBadge.badge}
+                    earned={true}
+                    earnedDate={userBadge.earned_at}
+                  />
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        )}
 
         {/* Available Courses */}
         <motion.div

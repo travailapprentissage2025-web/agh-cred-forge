@@ -11,6 +11,8 @@ import Admin from "./pages/Admin";
 import FlutterCourse from "./pages/FlutterCourse";
 import AdminSubmissions from "./pages/AdminSubmissions";
 import AdminCourses from "./pages/AdminCourses";
+import Profile from "./pages/Profile";
+import Leaderboard from "./pages/Leaderboard";
 import NotFound from "./pages/NotFound";
 import { LoadingPage } from "./components/LoadingPage";
 
@@ -46,6 +48,8 @@ const App = () => {
             <Route path="/courses/flutter" element={<FlutterCourse />} />
             <Route path="/admin/submissions" element={<AdminSubmissions />} />
             <Route path="/admin/courses" element={<AdminCourses />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </TooltipProvider>
